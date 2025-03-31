@@ -42,7 +42,7 @@ function [U, R, Q, X, p0] = Perf_M_M_1(lambda, mu)
     % Compute general metrics
     U = rho;                   % Utilization
     p0 = 1 - rho;              % Probability of 0 jobs
-    Q = rho ./ (1 - rho);      % Average number of requests
+    Q = (rho.^2) ./ (1 - rho);      % Average number of requests
     R = 1 ./ (mu .* (1 - rho));% Response time
     X = lambda;                % Throughput
 end
