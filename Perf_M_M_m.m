@@ -46,9 +46,9 @@ function [U, R, Q, X, p0, C] = Perf_M_M_m(lambda, mu, m)
   for i = 1:length(lambda)
     C(i) = ((m(i) * rho(i))^m(i) / factorial(m(i))) * (1 / (1 - rho(i))) * p0(i);
   end
-  
+    
   % Calculate average number of requests in the queue
-  Q_queue = C .* (rho ./ (1 - rho));
+  Q_queue = C .* ((rho.^2) ./ (1 - rho));
   
   % Calculate system parameters
   X = lambda;                        % Throughput
