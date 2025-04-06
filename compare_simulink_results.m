@@ -23,7 +23,7 @@ function compare_simulink_results(modelName)
 
     
     figure('Name', 'Grafic Comparatie', 'Position', [300 300 700 400]);
-    b = bar(categorical(categories), [app_vals; sim_vals]', 'BarWidth', 0.6);
+    b = bar(categorical(categories), [app_vals; sim_vals], 'BarWidth', 0.6);
     legend('Valoare Teoretica', 'Valoare Simulink', 'Location', 'northoutside', 'Orientation', 'horizontal');
     ylabel('Valori','FontSize',13);
     title('Comparatie între valorile teoretice și cele obținute în Simulink');
