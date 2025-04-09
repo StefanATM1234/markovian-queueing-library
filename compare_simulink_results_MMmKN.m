@@ -1,9 +1,8 @@
-function compare_simulink_results(modelName)
+function compare_simulink_results_MMmKN(modelName)
     %simOut = sim('mm1_2023', 'ReturnWorkspaceOutputs', 'on');
     simOut = sim(modelName, 'ReturnWorkspaceOutputs', 'on');
 
     util_sim = mean(simOut.Utilization.Data);
-    resp_sim = mean(simOut.AverageSystemTime.Data);
     queue_sim = mean(simOut.QueueLength.Data);
     serv_sim = mean(simOut.ServiceTime.Data);
 
@@ -17,9 +16,9 @@ function compare_simulink_results(modelName)
     serv_th = 1 / mu;
 
     
-    categories = {'Utilization', 'Response Time', 'Queue Length', 'Service Time'};
-    app_vals = [U, R, Q_queue, serv_th];
-    sim_vals = [util_sim, resp_sim, queue_sim, serv_sim];
+    categories = {'Utilization','Queue Length', 'Service Time'};
+    app_vals = [U, Q_queue, serv_th];
+    sim_vals = [util_sim,  queue_sim, serv_sim];
 
     
     figure('Name', 'Grafic Comparatie', 'Position', [300 300 700 400]);

@@ -1,4 +1,4 @@
-function [U, R, Q, X, p0, C] = Perf_M_M_m(lambda, mu, m)
+function [U, R, Q,Q_queue, X, p0, C] = Perf_M_M_m(lambda, mu, m)
   % Validate input arguments
   if nargin < 2 || nargin > 3
     error('Usage: Perf_M_M_m(lambda, mu, m)');
@@ -48,7 +48,7 @@ function [U, R, Q, X, p0, C] = Perf_M_M_m(lambda, mu, m)
   end
     
   % Calculate average number of requests in the queue
-  Q_queue = C .* ((rho.^2) ./ (1 - rho));
+  Q_queue = C .* ((rho) ./ (1 - rho));
   
   % Calculate system parameters
   X = lambda;                        % Throughput

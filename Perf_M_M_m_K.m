@@ -1,4 +1,4 @@
-function [U, R, Q, X, p0, pK] = Perf_M_M_m_K(lambda, mu, m, K)
+function [U, R, Q,Q_queue, X, p0, pK] = Perf_M_M_m_K(lambda, mu, m, K)
     if nargin ~= 4
         error('Numarul de argumente nu este corect');
     end
@@ -14,7 +14,7 @@ function [U, R, Q, X, p0, pK] = Perf_M_M_m_K(lambda, mu, m, K)
     X = zeros(size(lambda));
     p0 = zeros(size(lambda));
     pK = zeros(size(lambda));
-
+    Q_queue = zeros(size(lambda));
     for i = 1:length(lambda)
         rho = lambda(i) / mu(i);  % Request rate / service rate
 
@@ -40,6 +40,7 @@ function [U, R, Q, X, p0, pK] = Perf_M_M_m_K(lambda, mu, m, K)
                 Q(i) = Q(i) + k * (rho(i)^k) / factorial(k) * p0(i);
             else
                 Q(i) = Q(i) + k * (rho(i)^m(i)) / factorial(m(i)) * (rho(i)/m(i))^(k-m(i)) * p0(i);
+                Q_queue(i) = Q_queue(i) + (k-m(i)) * (rho(i)^m(i)) / factorial(m(i)) * (rho(i)/m(i))^(k-m(i)) * p0(i);
             end
         end
 

@@ -1,4 +1,4 @@
-function [U, R, Q, X, p0, pK] = Perf_M_M_m_K_N(lambda, mu, m, K, NrPop)
+function [U, R, Q,Q_queue, X, p0, pK] = Perf_M_M_m_K_N(lambda, mu, m, K, NrPop)
     if nargin ~= 5
         error('Numarul de argumente nu este corect');
     end
@@ -15,7 +15,7 @@ function [U, R, Q, X, p0, pK] = Perf_M_M_m_K_N(lambda, mu, m, K, NrPop)
     X = zeros(size(lambda));
     p0 = zeros(size(lambda));
     pK = zeros(size(lambda));
-
+    Q_queue = zeros(size(lambda));
     for i = 1:length(lambda)
         % Verificări
         if K(i) > NrPop(i)
@@ -52,7 +52,11 @@ function [U, R, Q, X, p0, pK] = Perf_M_M_m_K_N(lambda, mu, m, K, NrPop)
 
         % Număr mediu de clienți în sistem
         Q(i) = sum((0:K(i)) .* pi);
-
+        Q_serv = 0;
+        for n = 0:K(i)
+            Q_serv = Q_serv + min(n, m(i)) * pi(n + 1);
+        end
+        Q_queue(i) = Q(i) - Q_serv;
         % Timpul mediu de răspuns
         R(i) = Q(i) / X(i);
 

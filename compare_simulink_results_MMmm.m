@@ -1,25 +1,23 @@
-function compare_simulink_results(modelName)
+function compare_simulink_results_MMmm(modelName)
     %simOut = sim('mm1_2023', 'ReturnWorkspaceOutputs', 'on');
     simOut = sim(modelName, 'ReturnWorkspaceOutputs', 'on');
 
     util_sim = mean(simOut.Utilization.Data);
     resp_sim = mean(simOut.AverageSystemTime.Data);
-    queue_sim = mean(simOut.QueueLength.Data);
     serv_sim = mean(simOut.ServiceTime.Data);
-
+  
     lambda = evalin('base', 'lambda');
     mu     = evalin('base', 'mu');
     U      = evalin('base', 'U');
     R      = evalin('base', 'R');
-    Q_queue      = evalin('base', 'Q_queue');
     ServerNumbers     = evalin('base','ServerNumbers');
     MaxReq = evalin('base','MaxReq');
     serv_th = 1 / mu;
 
     
-    categories = {'Utilization', 'Response Time', 'Queue Length', 'Service Time'};
-    app_vals = [U, R, Q_queue, serv_th];
-    sim_vals = [util_sim, resp_sim, queue_sim, serv_sim];
+    categories = {'Utilization', 'Response Time', 'Service Time'};
+    app_vals = [U, R, serv_th];
+    sim_vals = [util_sim, resp_sim, serv_sim];
 
     
     figure('Name', 'Grafic Comparatie', 'Position', [300 300 700 400]);

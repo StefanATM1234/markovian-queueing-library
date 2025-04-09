@@ -1,4 +1,4 @@
-function [U, R, Q, X, p0, pK] = Perf_M_M_1_K(lambda, mu, K)
+function [U, R, Q,Q_queue, X, p0, pK] = Perf_M_M_1_K(lambda, mu, K)
 
 
   % Calculul factorului de utilizare
@@ -11,7 +11,7 @@ function [U, R, Q, X, p0, pK] = Perf_M_M_1_K(lambda, mu, K)
   X = zeros(size(lambda));
   p0 = zeros(size(lambda));
   pK = zeros(size(lambda));
-
+  Q_queue = zeros(size(lambda));
   % Calcul pentru cazurile a != 1
   idx_a_neq_1 = find(a ~= 1);
   if ~isempty(idx_a_neq_1)
@@ -19,6 +19,7 @@ function [U, R, Q, X, p0, pK] = Perf_M_M_1_K(lambda, mu, K)
     p0(i) = (1 - a(i)) ./ (1 - a(i).^(K(i) + 1));
     pK(i) = (1 - a(i)) .* (a(i).^K(i)) ./ (1 - a(i).^(K(i) + 1));
     Q(i) = a(i) ./ (1 - a(i)) - (K(i) + 1) .* (a(i).^(K(i) + 1)) ./ (1 - a(i).^(K(i) + 1));
+    Q_queue(i) = Q(i) - lambda(i) .* (1 - pK(i)) ./ mu(i); 
   end
 
   % Calcul pentru cazurile a == 1
@@ -28,6 +29,8 @@ function [U, R, Q, X, p0, pK] = Perf_M_M_1_K(lambda, mu, K)
     p0(i) = 1 ./ (K(i) + 1);
     pK(i) = 1 ./ (K(i) + 1);
     Q(i) = K(i) ./ 2;
+    Q_queue(i) = K(i) .* (K(i) - 1) ./ (2 .* (K(i)+1));
+
   end
 
   % Calculul măsurilor de performanță

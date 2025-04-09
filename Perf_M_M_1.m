@@ -1,4 +1,4 @@
-function [U, R, Q, X, p0] = Perf_M_M_1(lambda, mu)
+function [U, R, Q, Q_queue,X, p0] = Perf_M_M_1(lambda, mu)
     % Compute utilization, response time, average number of requests, and
     % throughput for an M/M/1 queue.
     %
@@ -42,7 +42,8 @@ function [U, R, Q, X, p0] = Perf_M_M_1(lambda, mu)
     % Compute general metrics
     U = rho;                   % Utilization
     p0 = 1 - rho;              % Probability of 0 jobs
-    Q = (rho.^2) ./ (1 - rho);      % Average number of requests
+    Q_queue = (rho.^2) ./ (1 - rho);      % Average number of requests in queue
+    Q = (rho) ./ (1 - rho);
     R = 1 ./ (mu .* (1 - rho));% Response time
     X = lambda;                % Throughput
 end

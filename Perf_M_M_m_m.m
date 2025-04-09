@@ -1,4 +1,4 @@
-function [U, R, Q, X, p0, pB] = Perf_M_M_m_m(lambda, mu, m)
+function [U, R, Q,Q_queue, X, p0, pB] = Perf_M_M_m_m(lambda, mu, m)
     % Verifică argumentele de intrare
     if nargin ~= 3
         error('Numarul de argumente nu este corect');
@@ -14,7 +14,7 @@ function [U, R, Q, X, p0, pB] = Perf_M_M_m_m(lambda, mu, m)
     X = zeros(size(lambda));
     p0 = zeros(size(lambda));
     pB = zeros(size(lambda));
-
+    Q_queue = zeros(size(lambda));
     for i = 1:length(lambda)
         rho = lambda(i) / (m(i) * mu(i));  % Utilizarea serverelor
 
@@ -35,7 +35,6 @@ function [U, R, Q, X, p0, pB] = Perf_M_M_m_m(lambda, mu, m)
 
         % Calcularea numărului mediu de cereri în sistem (Q)
         Q(i) = m(i) * rho(i);  % Numărul mediu de cereri în sistem
-
         % Calcularea Throughput-ului (X), Utilizării (U) și Timpului de răspuns (R)
         X(i) = lambda(i) * (1 - pB(i));  % Throughput-ul efectiv
         U(i) = X(i) / (m(i) * mu(i));    % Utilizarea serverului

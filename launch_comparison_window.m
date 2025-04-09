@@ -1,4 +1,4 @@
-function launch_comparison_window()
+function launch_comparison_window(modelName)
     f = uifigure('Name', 'Comparatie Simulink vs Teoretic', ...
         'Position', [500, 400, 320, 100]);
 
@@ -9,7 +9,13 @@ function launch_comparison_window()
 
     drawnow; 
 
-    compare_simulink_results('mm1_2023');
+    if strcmp(modelName, 'M_M_m_K_N')
+        compare_simulink_results_MMmKN(modelName);  
+    elseif strcmp(modelName, 'M_M_m_m')
+        compare_simulink_results_MMmm(modelName);  
+    else
+        compare_simulink_results(modelName);
+    end
 
     pause(0.3); 
     close(f);

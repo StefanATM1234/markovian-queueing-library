@@ -1,4 +1,4 @@
-function [U, R, Q, X, p0, C] = Perf_M_Er_1(lambda, mu, r)
+function [U, R, Q,Q_queue, X, p0, C] = Perf_M_Er_1(lambda, mu, r)
     % Verificarea argumentelor
     if nargin ~= 3
         error('Usage: Perf_M_Er_1(lambda, mu, r)');
@@ -18,7 +18,7 @@ function [U, R, Q, X, p0, C] = Perf_M_Er_1(lambda, mu, r)
 
     % Lungimea medie a cozii
     Q = lambda * R;
-
+    Q_queue = lambda * Wq;
     % Throughput și utilizare
     X = lambda;
     U = rho;
