@@ -1,49 +1,36 @@
 function [U, R, Q, Q_queue,X, p0] = Perf_M_M_1(lambda, mu)
-    % Compute utilization, response time, average number of requests, and
-    % throughput for an M/M/1 queue.
-    %
-    % Inputs:
-    %   lambda - Arrival rate (lambda >= 0)
-    %   mu - Service rate (mu > lambda)
-    %
-    % Outputs:
-    %   U - Server utilization
-    %   R - Response time
-    %   Q - Average number of requests in the system
-    %   X - Server throughput
-    %   p0 - Steady-state probability of 0 requests in the system
-    
+
     if nargin ~= 2
-        error("Incorrect number of input arguments. Usage: Perf_M_M_1(lambda, mu)");
+        error("Număr incorect de argumente. Usage: Perf_M_M_1(lambda, mu)");
     end
-    
-    % Ensure lambda and mu are vectors
+
+    % Verificare că lambda și mu sunt vectori.
     if ~(isvector(lambda) && isvector(mu))
-        error("lambda and mu must be vectors.");
+        error("lambda și mu trebuie sa fie vectori.");
     end
     
-    % Ensure sizes of lambda and mu are compatible
+    % Se verifică dimensiunile
     if numel(lambda) ~= numel(mu)
-        error("lambda and mu must have the same size.");
+        error("lambda și mu trebuie sa aibă aceeași dimensiune.");
     end
     
-    lambda = lambda(:)'; % Convert to row vector
-    mu = mu(:)';         % Convert to row vector
-    
+    lambda = lambda(:)';
+    mu = mu(:)';
+
     if any(lambda < 0)
-        error("lambda must be >= 0");
+        error("lambda trebuie să fie >= 0");
     end
     
-    rho = lambda ./ mu; % Utilization factor
+    rho = lambda ./ mu; % Factorul de utilizare
     if any(rho >= 1)
-        error("Processing capacity exceeded (rho >= 1).");
+        error("Capacitatea de procesare a fost depășită(rho >= 1).");
     end
     
-    % Compute general metrics
-    U = rho;                   % Utilization
-    p0 = 1 - rho;              % Probability of 0 jobs
-    Q_queue = (rho.^2) ./ (1 - rho);      % Average number of requests in queue
+    % Calculam performanțele
+    U = rho;                   % Utilizarea
+    p0 = 1 - rho;              % Probabilitatea ca sistemul să fie gol
+    Q_queue = (rho.^2) ./ (1 - rho);      % numărul mediu de cereri în sistem
     Q = (rho) ./ (1 - rho);
-    R = 1 ./ (mu .* (1 - rho));% Response time
+    R = 1 ./ (mu .* (1 - rho));% Timpul de răspuns
     X = lambda;                % Throughput
 end
