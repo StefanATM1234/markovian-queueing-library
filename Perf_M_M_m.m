@@ -1,59 +1,85 @@
-function [U, R, Q,Q_queue, X, p0, C] = Perf_M_M_m(lambda, mu, m)
-  % Validate input arguments
-  if nargin < 2 || nargin > 3
-    error('Usage: Perf_M_M_m(lambda, mu, m)');
-  end
-  
-  if nargin == 2
-    m = 1;  % Set m to 1 if not provided
-  else
+function [U, R, Q, Q_queue, X, p0, C] = Perf_M_M_m(lambda, mu, m)
+% Perf_M_M_m Calculează indicatorii de performanță pentru un sistem M/M/m.
+%
+% Sistemul presupune m servere identice care deservesc cererile sosite
+% conform unui proces Poisson și durate de servire exponentiale.
+%
+% Intrări:
+%   lambda - vector al ratelor de sosire (λ)
+%   mu     - vector al ratelor de servire (μ)
+%   m      - vector al numărului de servere
+%
+% Ieșiri:
+%   U        - utilizarea fiecărui server (ρ)
+%   R        - timpul mediu de răspuns în sistem
+%   Q        - numărul mediu total de cereri în sistem
+%   Q_queue  - numărul mediu de cereri în așteptare (coadă)
+%   X        - rata medie de procesare (throughput)
+%   p0       - probabilitatea ca sistemul să fie gol
+%   C        - probabilitatea ca o cerere să aștepte în coadă (Erlang-C)
+
+    % Verificarea numărului de argumente
+    if nargin < 2 || nargin > 3
+        error('Apel corect: Perf_M_M_m(lambda, mu, m)');
+    end
+
+    % Dacă m nu e dat, se consideră m = 1 (M/M/1)
+    if nargin == 2
+        m = 1;
+    end
+
+    % Verificăm că toate valorile sunt numerice
     if ~(isnumeric(lambda) && isnumeric(mu) && isnumeric(m))
-        error('The parameters must be numeric vectors');
+        error('Toți parametrii trebuie să fie vectori numerici');
     end
-  end
-  
-  lambda = lambda(:)';  % Convert to row vector
-  mu = mu(:)';          % Convert to row vector
-  m = m(:)';            % Convert to row vector
-  
-  if any(m <= 0)
-    error('m must be > 0');
-  end
-  if any(lambda <= 0)
-    error('lambda must be > 0');
-  end
-  
-  % Calculate utilization (rho)
-  rho = lambda ./ (m .* mu);
-  if any(rho >= 1)
-    error('Processing capacity exceeded');
-  end
-  
-  % Calculate p0 (probability of 0 requests in the system)
-  p0 = zeros(size(lambda));
-  for i = 1:length(lambda)
-    sum_terms = 0;
-    % Calculating the sum part of p0
-    for k = 0:(m(i)-1)
-        sum_terms = sum_terms + (m(i) * rho(i))^k / factorial(k);
+
+    % Convertim toate valorile în vectori-linie
+    lambda = lambda(:)';
+    mu = mu(:)';
+    m = m(:)';
+
+    % Verificări de validitate
+    if any(m <= 0)
+        error('Numărul de servere m trebuie să fie > 0');
     end
-    % Calculating the second part of p0
-    p0(i) = 1 / (sum_terms + (m(i) * rho(i))^m(i) / (factorial(m(i)) * (1 - rho(i))));
-  end
-  
-  % Calculate Erlang-C probability (probability of delay)
-  C = zeros(size(lambda));
-  for i = 1:length(lambda)
-    C(i) = ((m(i) * rho(i))^m(i) / factorial(m(i))) * (1 / (1 - rho(i))) * p0(i);
-  end
-    
-  % Calculate average number of requests in the queue
-  Q_queue = C .* ((rho) ./ (1 - rho));
-  
-  % Calculate system parameters
-  X = lambda;                        % Throughput
-  U = rho;                           % Server utilization
-  Q = Q_queue + (lambda ./ mu);      % Average number of requests in the system
-  R = Q ./ lambda;                   % Response time
-  
+    if any(lambda <= 0)
+        error('Rata lambda trebuie să fie > 0');
+    end
+
+    % Calculul utilizării ρ = λ / (m * μ)
+    rho = lambda ./ (m .* mu);
+    if any(rho >= 1)
+        error('Capacitatea de procesare este depășită (rho ≥ 1)');
+    end
+
+    % Calculul probabilității ca sistemul să fie gol (p₀)
+    p0 = zeros(size(lambda));
+    for i = 1:length(lambda)
+        suma = 0;
+        for k = 0:(m(i)-1)
+            suma = suma + (m(i) * rho(i))^k / factorial(k);
+        end
+        p0(i) = 1 / (suma + (m(i) * rho(i))^m(i) / (factorial(m(i)) * (1 - rho(i))));
+    end
+
+    % Probabilitatea ca o cerere să fie nevoită să aștepte (Erlang-C)
+    C = zeros(size(lambda));
+    for i = 1:length(lambda)
+        C(i) = ((m(i) * rho(i))^m(i) / factorial(m(i))) * (1 / (1 - rho(i))) * p0(i);
+    end
+
+    % Numărul mediu de cereri în coadă
+    Q_queue = C .* (rho ./ (1 - rho));
+
+    % Throughput = λ (nu se pierd cereri)
+    X = lambda;
+
+    % Utilizarea serverului
+    U = rho;
+
+    % Numărul total mediu de cereri în sistem
+    Q = Q_queue + lambda ./ mu;
+
+    % Timpul mediu de răspuns
+    R = Q ./ lambda;
 end
