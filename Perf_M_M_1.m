@@ -17,34 +17,27 @@ function [U, R, Q, Q_queue, X, p0] = Perf_M_M_1(lambda, mu)
     if nargin ~= 2
         error("Număr incorect de argumente. Usage: Perf_M_M_1(lambda, mu)");
     end
-
     % Verificare că lambda și mu sunt vectori
     if ~(isvector(lambda) && isvector(mu))
         error("lambda și mu trebuie să fie vectori.");
     end
-
     % Verificare că au aceeași dimensiune
     if numel(lambda) ~= numel(mu)
         error("lambda și mu trebuie să fie de aceeași dimensiune.");
     end
-
     % Conversia în vectori linie
     lambda = lambda(:)';
     mu = mu(:)';
-
     % Verificare valori pozitive pentru lambda
     if any(lambda < 0)
         error("lambda trebuie să fie >= 0");
     end
-
     % Calculul factorului de utilizare
     rho = lambda ./ mu;
-    
     % Verificare ca rho să fie sub 1 (condiție de stabilitate)
     if any(rho >= 1)
         error("Capacitatea de procesare a fost depășită (rho >= 1).");
     end
-
     % Calculul indicatorilor de performanță
     U = rho;                                 % Utilizarea serverului
     p0 = 1 - rho;                            % Probabilitatea ca sistemul să fie gol
